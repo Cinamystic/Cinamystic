@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cinamystic — Palette Preview (Gamer / Editor)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: #0a0a0c;
+      color: #eee;
+      padding: 40px 5%;
+      min-height: 100vh;
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.1em;
+      text-align: center;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 50px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+    .palette {
+      max-width: 1100px;
+      margin: 0 auto 60px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    .palette-label {
+      padding: 20px 30px;
+      background: #111;
+      border-bottom: 1px solid #222;
+    }
+    .palette-label h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.1em;
+      color: #fff;
+    }
+    .palette-label p {
+      color: #888;
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+    .mock {
+      padding: 55px 40px 45px;
+      position: relative;
+      overflow: hidden;
+    }
+    .mock-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+    @media (max-width: 820px) { .mock-grid { grid-template-columns: 1fr; } }
+    .mock h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+    .mock .aka {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      font-weight: 600;
+    }
+    .mock .tagline {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 22px;
+      line-height: 1.35;
+    }
+    .btn-row { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+    .btn {
+      padding: 12px 26px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      border: 2px solid;
+      cursor: pointer;
+    }
+    .cards { display: flex; gap: 10px; flex-wrap: wrap; }
+    .card {
+      padding: 16px 22px;
+      border-radius: 6px;
+      border: 1px solid;
+    }
+    .card .stat {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 900;
+    }
+    .card .label {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* Editor UI mock on right side */
+    .editor {
+      border-radius: 6px;
+      padding: 14px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px;
+      border: 1px solid;
+    }
+    .editor-chrome {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .dots { display: flex; gap: 4px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .track {
+      height: 18px;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid;
+    }
+    .clip { position: absolute; top: 1px; bottom: 1px; border-radius: 1px; }
+    .wave {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 22px;
+      padding: 0 2px;
+      border-radius: 2px;
+      border: 1px solid;
+    }
+    .bar { width: 2px; border-radius: 1px; }
+    .timecode {
+      margin-top: 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px;
+      text-align: center;
+      letter-spacing: 0.15em;
+    }
+
+    .swatches { display: flex; }
+    .swatch {
+      flex: 1;
+      padding: 22px 14px;
+      text-align: center;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* ══════════ A — CYPRUS + SAND + ACID LIME ══════════ */
+    .pA .mock {
+      background:
+        radial-gradient(ellipse at 20% 40%, #00605b 0%, #004643 45%, #002f2d 100%);
+      color: #F0EDE5;
+    }
+    .pA h3 {
+      background: linear-gradient(135deg, #F0EDE5 0%, #C4FF47 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .pA .aka { color: #C4FF47; }
+    .pA .tagline { color: #F0EDE5; }
+    .pA .btn-primary {
+      background: #C4FF47; color: #002f2d; border-color: #C4FF47;
+      box-shadow: 0 0 30px rgba(196,255,71,0.45), 0 0 8px rgba(196,255,71,0.8);
+    }
+    .pA .btn-secondary { background: transparent; color: #C4FF47; border-color: #C4FF47; }
+    .pA .card {
+      background: rgba(0,47,45,0.7);
+      border-color: rgba(196,255,71,0.35);
+      color: #F0EDE5;
+    }
+    .pA .card .stat { color: #C4FF47; }
+    .pA .card .label { color: #F0EDE5; opacity: 0.7; }
+    .pA .editor { background: #002f2d; border-color: rgba(196,255,71,0.25); color: #F0EDE5; }
+    .pA .editor-chrome .brand { color: #C4FF47; }
+    .pA .editor-chrome .rec { color: #ff4747; margin-left: auto; }
+    .pA .dot.r { background: #ff4747; }
+    .pA .dot.y { background: #ffd447; }
+    .pA .dot.g { background: #C4FF47; }
+    .pA .track { background: #001f1e; border-color: rgba(196,255,71,0.2); }
+    .pA .clip.v { background: linear-gradient(90deg, #C4FF47, #8fd017); }
+    .pA .clip.v2 { background: linear-gradient(90deg, #8fd017, #C4FF47); opacity: 0.7; }
+    .pA .wave { background: #001f1e; border-color: rgba(196,255,71,0.2); }
+    .pA .bar { background: #C4FF47; }
+    .pA .timecode { color: #C4FF47; }
+    .pA .s1 { background: #004643; color: #F0EDE5; }
+    .pA .s2 { background: #002f2d; color: #F0EDE5; }
+    .pA .s3 { background: #00605b; color: #F0EDE5; }
+    .pA .s4 { background: #C4FF47; color: #002f2d; }
+    .pA .s5 { background: #F0EDE5; color: #002f2d; }
+
+    /* ══════════ B — CYPRUS + SAND + ELECTRIC CYAN ══════════ */
+    .pB .mock {
+      background:
+        radial-gradient(ellipse at 20% 40%, #00605b 0%, #004643 45%, #002f2d 100%);
+      color: #F0EDE5;
+    }
+    .pB h3 {
+      background: linear-gradient(135deg, #F0EDE5 0%, #00F5D4 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .pB .aka { color: #00F5D4; }
+    .pB .tagline { color: #F0EDE5; }
+    .pB .btn-primary {
+      background: #00F5D4; color: #002f2d; border-color: #00F5D4;
+      box-shadow: 0 0 30px rgba(0,245,212,0.5), 0 0 8px rgba(0,245,212,0.8);
+    }
+    .pB .btn-secondary { background: transparent; color: #00F5D4; border-color: #00F5D4; }
+    .pB .card {
+      background: rgba(0,47,45,0.7);
+      border-color: rgba(0,245,212,0.35);
+      color: #F0EDE5;
+    }
+    .pB .card .stat { color: #00F5D4; }
+    .pB .card .label { color: #F0EDE5; opacity: 0.7; }
+    .pB .editor { background: #002f2d; border-color: rgba(0,245,212,0.25); color: #F0EDE5; }
+    .pB .editor-chrome .brand { color: #00F5D4; }
+    .pB .editor-chrome .rec { color: #ff4763; margin-left: auto; }
+    .pB .dot.r { background: #ff4763; }
+    .pB .dot.y { background: #ffd447; }
+    .pB .dot.g { background: #00F5D4; }
+    .pB .track { background: #001f1e; border-color: rgba(0,245,212,0.2); }
+    .pB .clip.v { background: linear-gradient(90deg, #00F5D4, #0099aa); }
+    .pB .clip.v2 { background: linear-gradient(90deg, #0099aa, #00F5D4); opacity: 0.7; }
+    .pB .wave { background: #001f1e; border-color: rgba(0,245,212,0.2); }
+    .pB .bar { background: #00F5D4; }
+    .pB .timecode { color: #00F5D4; }
+    .pB .s1 { background: #004643; color: #F0EDE5; }
+    .pB .s2 { background: #002f2d; color: #F0EDE5; }
+    .pB .s3 { background: #00605b; color: #F0EDE5; }
+    .pB .s4 { background: #00F5D4; color: #002f2d; }
+    .pB .s5 { background: #F0EDE5; color: #002f2d; }
+
+    /* ══════════ C — CYPRUS + SAND + WARM AMBER ══════════ */
+    .pC .mock {
+      background:
+        radial-gradient(ellipse at 20% 40%, #00605b 0%, #004643 45%, #002f2d 100%);
+      color: #F0EDE5;
+    }
+    .pC h3 {
+      background: linear-gradient(135deg, #F0EDE5 0%, #FFB800 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .pC .aka { color: #FFB800; }
+    .pC .tagline { color: #F0EDE5; }
+    .pC .btn-primary {
+      background: #FFB800; color: #002f2d; border-color: #FFB800;
+      box-shadow: 0 0 30px rgba(255,184,0,0.4), 0 0 8px rgba(255,184,0,0.7);
+    }
+    .pC .btn-secondary { background: transparent; color: #FFB800; border-color: #FFB800; }
+    .pC .card {
+      background: rgba(0,47,45,0.7);
+      border-color: rgba(255,184,0,0.35);
+      color: #F0EDE5;
+    }
+    .pC .card .stat { color: #FFB800; }
+    .pC .card .label { color: #F0EDE5; opacity: 0.7; }
+    .pC .editor { background: #002f2d; border-color: rgba(255,184,0,0.25); color: #F0EDE5; }
+    .pC .editor-chrome .brand { color: #FFB800; }
+    .pC .editor-chrome .rec { color: #ff4747; margin-left: auto; }
+    .pC .dot.r { background: #ff4747; }
+    .pC .dot.y { background: #ffd447; }
+    .pC .dot.g { background: #FFB800; }
+    .pC .track { background: #001f1e; border-color: rgba(255,184,0,0.2); }
+    .pC .clip.v { background: linear-gradient(90deg, #FFB800, #b87c00); }
+    .pC .clip.v2 { background: linear-gradient(90deg, #b87c00, #FFB800); opacity: 0.7; }
+    .pC .wave { background: #001f1e; border-color: rgba(255,184,0,0.2); }
+    .pC .bar { background: #FFB800; }
+    .pC .timecode { color: #FFB800; }
+    .pC .s1 { background: #004643; color: #F0EDE5; }
+    .pC .s2 { background: #002f2d; color: #F0EDE5; }
+    .pC .s3 { background: #00605b; color: #F0EDE5; }
+    .pC .s4 { background: #FFB800; color: #002f2d; }
+    .pC .s5 { background: #F0EDE5; color: #002f2d; }
+  </style>
+</head>
+<body>
+  <h1>CYPRUS × GAMER / EDITOR</h1>
+  <p class="subtitle">Same base — three different accent energies</p>
+
+  <!-- A -->
+  <div class="palette pA">
+    <div class="palette-label">
+      <h2>A — Cyprus + Acid Lime</h2>
+      <p>Forest green + electric lime. Maximum gamer/editor energy. Feels like Twitch, Discord, After Effects render bar, Fortnite UI. The loudest, most "gamer" option.</p>
+    </div>
+    <div class="mock">
+      <div class="mock-grid">
+        <div>
+          <h3>CINAMYSTIC</h3>
+          <div class="aka">— AKA RAHUL SINGH</div>
+          <div class="tagline">Where raw footage goes to get a personality.</div>
+          <div class="btn-row">
+            <button class="btn btn-primary">See the Magic</button>
+            <button class="btn btn-secondary">Let's Talk</button>
+          </div>
+          <div class="cards">
+            <div class="card"><div class="stat">50+</div><div class="label">Projects</div></div>
+            <div class="card"><div class="stat">3+</div><div class="label">Years</div></div>
+            <div class="card"><div class="stat">100%</div><div class="label">Happy</div></div>
+          </div>
+        </div>
+        <div class="editor">
+          <div class="editor-chrome">
+            <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+            <span class="brand">CINAMYSTIC.TIMELINE</span>
+            <span class="rec">● REC</span>
+          </div>
+          <div class="track"><div class="clip v" style="left:4%;width:28%"></div><div class="clip v2" style="left:36%;width:22%"></div><div class="clip v" style="left:62%;width:32%"></div></div>
+          <div class="track"><div class="clip v2" style="left:8%;width:40%"></div><div class="clip v" style="left:52%;width:40%"></div></div>
+          <div class="wave">
+            <div class="bar" style="height:4px"></div><div class="bar" style="height:10px"></div><div class="bar" style="height:16px"></div><div class="bar" style="height:20px"></div><div class="bar" style="height:14px"></div><div class="bar" style="height:18px"></div><div class="bar" style="height:10px"></div><div class="bar" style="height:6px"></div><div class="bar" style="height:14px"></div><div class="bar" style="height:18px"></div><div class="bar" style="height:10px"></div><div class="bar" style="height:4px"></div><div class="bar" style="height:8px"></div><div class="bar" style="height:14px"></div><div class="bar" style="height:18px"></div><div class="bar" style="height:12px"></div><div class="bar" style="height:6px"></div>
+          </div>
+          <div class="timecode">00:01:23:18</div>
+        </div>
+      </div>
+    </div>
+    <div class="swatches">
+      <div class="swatch s1">Cyprus<br/>Background</div>
+      <div class="swatch s2">Deep Cyprus<br/>Cards</div>
+      <div class="swatch s3">Bright Cyprus<br/>Hover BG</div>
+      <div class="swatch s4">Acid Lime<br/>Accent</div>
+      <div class="swatch s5">Sand<br/>Text</div>
+    </div>
+  </div>
+
+  <!-- B -->
+  <div class="palette pB">
+    <div class="palette-label">
+      <h2>B — Cyprus + Electric Cyan</h2>
+      <p>Forest green + DaVinci cyan. Cleaner, more "pro editor" than "gamer". Feels like Resolve, Premiere, Figma. Techy but refined.</p>
+    </div>
+    <div class="mock">
+      <div class="mock-grid">
+        <div>
+          <h3>CINAMYSTIC</h3>
+          <div class="aka">— AKA RAHUL SINGH</div>
+          <div class="tagline">Where raw footage goes to get a personality.</div>
+          <div class="btn-row">
+            <button class="btn btn-primary">See the Magic</button>
+            <button class="btn btn-secondary">Let's Talk</button>
+          </div>
+          <div class="cards">
+            <div class="card"><div class="stat">50+</div><div class="label">Projects</div></div>
+            <div class="card"><div class="stat">3+</div><div class="label">Years</div></div>
+            <div class="card"><div class="stat">100%</div><div class="label">Happy</div></div>
+          </div>
+        </div>
+        <div class="editor">
+          <div class="editor-chrome">
+            <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+            <span class="brand">CINAMYSTIC.TIMELINE</span>
+            <span class="rec">● REC</span>
+          </div>
+          <div class="track"><div class="clip v" style="left:4%;width:28%"></div><div class="clip v2" style="left:36%;width:22%"></div><div class="clip v" style="left:62%;width:32%"></div></div>
+          <div class="track"><div class="clip v2" style="left:8%;width:40%"></div><div class="clip v" style="left:52%;width:40%"></div></div>
+          <div class="wave">
+            <div class="bar" style="height:4px"></div><div class="bar" style="height:10px"></div><div class="bar" style="height:16px"></div><div class="bar" style="height:20px"></div><div class="bar" style="height:14px"></div><div class="bar" style="height:18px"></div><div class="bar" style="height:10px"></div><div class="bar" style="height:6px"></div><div class="bar" style="height:14px"></div><div class="bar" style="height:18px"></div><div class="bar" style="height:10px"></div><div class="bar" style="height:4px"></div><div class="bar" style="height:8px"></div><div class="bar" style="height:14px"></div><div class="bar" style="height:18px"></div><div class="bar" style="height:12px"></div><div class="bar" style="height:6px"></div>
+          </div>
+          <div class="timecode">00:01:23:18</div>
+        </div>
+      </div>
+    </div>
+    <div class="swatches">
+      <div class="swatch s1">Cyprus<br/>Background</div>
+      <div class="swatch s2">Deep Cyprus<br/>Cards</div>
+      <div class="swatch s3">Bright Cyprus<br/>Hover BG</div>
+      <div class="swatch s4">Electric Cyan<br/>Accent</div>
+      <div class="swatch s5">Sand<br/>Text</div>
+    </div>
+  </div>
+
+  <!-- C -->
+  <div class="palette pC">
+    <div class="palette-label">
+      <h2>C — Cyprus + Warm Amber</h2>
+      <p>Forest green + warm amber yellow. Feels like vintage editing suites, film reels, golden-hour cinematography. Less "gamer," more "cinema gearhead." Middle-ground option.</p>
+    </div>
+    <div class="mock">
+      <div class="mock-grid">
+        <div>
+          <h3>CINAMYSTIC</h3>
+          <div class="aka">— AKA RAHUL SINGH</div>
+          <div class="tagline">Where raw footage goes to get a personality.</div>
+          <div class="btn-row">
+            <button class="btn btn-primary">See the Magic</button>
+            <button class="btn btn-secondary">Let's Talk</button>
+          </div>
+          <div class="cards">
+            <div class="card"><div class="stat">50+</div><div class="label">Projects</div></div>
+            <div class="card"><div class="stat">3+</div><div class="label">Years</div></div>
+            <div class="card"><div class="stat">100%</div><div class="label">Happy</div></div>
+          </div>
+        </div>
+        <div class="editor">
+          <div class="editor-chrome">
+            <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+            <span class="brand">CINAMYSTIC.TIMELINE</span>
+            <span class="rec">● REC</span>
+          </div>
+          <div class="track"><div class="clip v" style="left:4%;width:28%"></div><div class="clip v2" style="left:36%;width:22%"></div><div class="clip v" style="left:62%;width:32%"></div></div>
+          <div class="track"><div class="clip v2" style="left:8%;width:40%"></div><div class="clip v" style="left:52%;width:40%"></div></div>
+          <div class="wave">
+            <div class="bar" style="height:4px"></div><div class="bar" style="height:10px"></div><div class="bar" style="height:16px"></div><div class="bar" style="height:20px"></div><div class="bar" style="height:14px"></div><div class="bar" style="height:18px"></div><div class="bar" style="height:10px"></div><div class="bar" style="height:6px"></div><div class="bar" style="height:14px"></div><div class="bar" style="height:18px"></div><div class="bar" style="height:10px"></div><div class="bar" style="height:4px"></div><div class="bar" style="height:8px"></div><div class="bar" style="height:14px"></div><div class="bar" style="height:18px"></div><div class="bar" style="height:12px"></div><div class="bar" style="height:6px"></div>
+          </div>
+          <div class="timecode">00:01:23:18</div>
+        </div>
+      </div>
+    </div>
+    <div class="swatches">
+      <div class="swatch s1">Cyprus<br/>Background</div>
+      <div class="swatch s2">Deep Cyprus<br/>Cards</div>
+      <div class="swatch s3">Bright Cyprus<br/>Hover BG</div>
+      <div class="swatch s4">Warm Amber<br/>Accent</div>
+      <div class="swatch s5">Sand<br/>Text</div>
+    </div>
+  </div>
+</body>
+</html>
