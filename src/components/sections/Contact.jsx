@@ -4,14 +4,35 @@ import { contact } from '../../data/content';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [status, setStatus] = useState('idle'); // idle | sending | sent | error
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`New Inquiry from ${form.name}`);
-    const body = encodeURIComponent(
-      `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
-    );
-    window.location.href = `mailto:${contact.email}?subject=${subject}&body=${body}`;
+    setStatus('sending');
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: 'e08cd392-ac95-4ff7-90b7-b831af011d4b',
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          subject: `New Inquiry from ${form.name} — cinamystic.in`,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setStatus('sent');
+        setForm({ name: '', email: '', message: '' });
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    }
   };
 
   const inputStyle = {
@@ -190,12 +211,13 @@ export default function Contact() {
             <button
               type="submit"
               data-hover
+              disabled={status === 'sending'}
               style={{
                 fontFamily: "'Orbitron', sans-serif",
                 fontSize: '0.85rem',
                 fontWeight: 700,
                 padding: '16px 32px',
-                backgroundColor: '#2872a1',
+                backgroundColor: status === 'sending' ? '#5a7a8f' : '#2872a1',
                 color: '#1a3547',
                 border: 'none',
                 letterSpacing: '0.1em',
@@ -203,6 +225,7 @@ export default function Contact() {
                 transition: 'all 0.3s',
                 boxShadow: '0 0 20px rgba(40, 114, 161,0.3)',
                 alignSelf: 'stretch',
+                opacity: status === 'sending' ? 0.7 : 1,
               }}
               onMouseEnter={(e) => {
                 e.target.style.boxShadow = '0 0 30px rgba(40, 114, 161,0.6)';
@@ -213,8 +236,32 @@ export default function Contact() {
                 e.target.style.transform = 'translateY(0)';
               }}
             >
-              Send the brief
+              {status === 'sending' ? 'Sending...' : 'Send the brief'}
             </button>
+
+            {status === 'sent' && (
+              <p style={{
+                fontFamily: "'Rajdhani', sans-serif",
+                fontSize: '1rem',
+                color: '#2e7d32',
+                textAlign: 'center',
+                marginTop: '0.5rem',
+              }}>
+                Message sent — I'll reply within 24 hours.
+              </p>
+            )}
+
+            {status === 'error' && (
+              <p style={{
+                fontFamily: "'Rajdhani', sans-serif",
+                fontSize: '1rem',
+                color: '#c0392b',
+                textAlign: 'center',
+                marginTop: '0.5rem',
+              }}>
+                Something went wrong. Try emailing me directly at {contact.email}.
+              </p>
+            )}
           </form>
         </div>
       </SectionReveal>
