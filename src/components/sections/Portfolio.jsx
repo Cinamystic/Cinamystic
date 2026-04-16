@@ -69,19 +69,28 @@ function VideoModal({ project, onClose }) {
       </button>
 
       {/* Video */}
-      <video
-        src={project.videoUrl}
-        controls
-        autoPlay
+      <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          maxWidth: '90vw',
-          maxHeight: '75vh',
+          width: '90vw',
+          maxWidth: '960px',
+          aspectRatio: '16 / 9',
           borderRadius: '10px',
+          overflow: 'hidden',
           background: '#000',
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6)',
         }}
-      />
+      >
+        <iframe
+          src={`${project.videoUrl}?autoplay=1&title=0&byline=0&portrait=0`}
+          width="100%"
+          height="100%"
+          frameBorder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+          style={{ display: 'block' }}
+        />
+      </div>
 
       {/* Project info */}
       <div

@@ -94,7 +94,7 @@ export const projects = [
     title: 'Real Estate Video 1',
     category: 'Real Estate',
     thumbnail: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=500&fit=crop',
-    videoUrl: 'https://f.io/zt_7qd9Z',
+    videoUrl: 'https://player.vimeo.com/video/1183908843',
     description: 'Live property, AI-enhanced interiors. The listing looked twice as expensive — and sold twice as fast.',
   },
   {
