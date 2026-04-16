@@ -1,6 +1,146 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SectionReveal from '../ui/SectionReveal';
 import { projects, categories } from '../../data/content';
+
+function VideoModal({ project, onClose }) {
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 10000,
+        background: 'rgba(5, 12, 22, 0.92)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem',
+        animation: 'modalFadeIn 0.25s ease',
+      }}
+    >
+      {/* Close button */}
+      <button
+        onClick={onClose}
+        data-hover
+        style={{
+          position: 'absolute',
+          top: '1.2rem',
+          right: '1.5rem',
+          background: 'none',
+          border: '1px solid rgba(40, 114, 161, 0.4)',
+          borderRadius: '50%',
+          width: '40px',
+          height: '40px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          transition: 'border-color 0.3s, background 0.3s',
+          zIndex: 2,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = '#2872a1';
+          e.currentTarget.style.background = 'rgba(40, 114, 161, 0.15)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(40, 114, 161, 0.4)';
+          e.currentTarget.style.background = 'none';
+        }}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" stroke="#e8f1f6" strokeWidth="2" fill="none">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
+      {/* Video */}
+      <video
+        src={project.videoUrl}
+        controls
+        autoPlay
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          maxWidth: '90vw',
+          maxHeight: '75vh',
+          borderRadius: '10px',
+          background: '#000',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6)',
+        }}
+      />
+
+      {/* Project info */}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          marginTop: '1rem',
+          textAlign: 'center',
+          maxWidth: '600px',
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "-apple-system, 'Inter', 'Segoe UI', sans-serif",
+            fontSize: '0.6rem',
+            fontWeight: 600,
+            padding: '3px 10px',
+            border: '1px solid rgba(40, 114, 161, 0.4)',
+            borderRadius: '20px',
+            color: '#2872a1',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+          }}
+        >
+          {project.category}
+        </span>
+        <h3
+          style={{
+            fontFamily: "'Orbitron', sans-serif",
+            fontSize: '1.1rem',
+            fontWeight: 700,
+            color: '#e8f1f6',
+            marginTop: '0.6rem',
+            letterSpacing: '0.03em',
+          }}
+        >
+          {project.title}
+        </h3>
+        <p
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            fontSize: '0.95rem',
+            color: '#7a95a8',
+            lineHeight: 1.5,
+            marginTop: '0.3rem',
+          }}
+        >
+          {project.description}
+        </p>
+      </div>
+
+      <style>{`
+        @keyframes modalFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
+    </div>
+  );
+}
 
 function ProjectCard({ project, onPlay }) {
   const [hovered, setHovered] = useState(false);
@@ -147,15 +287,12 @@ function ProjectCard({ project, onPlay }) {
 
 export default function Portfolio() {
   const [activeCategory, setActiveCategory] = useState('All');
+  const [activeProject, setActiveProject] = useState(null);
 
   const filtered =
     activeCategory === 'All'
       ? projects
       : projects.filter((p) => p.category === activeCategory);
-
-  const openProject = (project) => {
-    window.open(project.videoUrl, '_blank', 'noopener,noreferrer');
-  };
 
   return (
     <section id="portfolio" className="section">
@@ -236,10 +373,17 @@ export default function Portfolio() {
       >
         {filtered.map((project) => (
           <SectionReveal key={project.id}>
-            <ProjectCard project={project} onPlay={openProject} />
+            <ProjectCard project={project} onPlay={setActiveProject} />
           </SectionReveal>
         ))}
       </div>
+
+      {activeProject && (
+        <VideoModal
+          project={activeProject}
+          onClose={() => setActiveProject(null)}
+        />
+      )}
     </section>
   );
 }
