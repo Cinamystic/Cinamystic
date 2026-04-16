@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { brand, skills } from '../../data/content';
 
 /*
@@ -15,25 +15,41 @@ const CARAMEL_LIGHT = '#14243a';   // Raised panel on screen
 const TEXT = '#e8f1f6';            // Light text on dark screen
 const TEXT_MUTED = '#7a95a8';
 
-// Timeline scrubber that animates on its own
+// Timeline scrubber — uses refs for DOM updates to avoid React re-renders
+const BARS = Array.from({ length: 60 }, (_, i) =>
+  Math.abs(Math.sin(i * 0.7) * 0.6 + Math.cos(i * 0.3) * 0.4)
+);
+
 function TimelineScrubber() {
-  const [playhead, setPlayhead] = useState(0);
+  const barRefs = useRef([]);
+  const playheadRef = useRef(null);
+  const timecodeRef = useRef(null);
+
   useEffect(() => {
     let raf;
     const start = Date.now();
     const tick = () => {
       const t = ((Date.now() - start) / 6000) % 1;
-      setPlayhead(t);
+
+      // Update bar colors directly
+      barRefs.current.forEach((el, i) => {
+        if (el) el.style.background = i / BARS.length < t ? RESIN : RESIN + '55';
+      });
+
+      // Move playhead
+      if (playheadRef.current) playheadRef.current.style.left = `${t * 100}%`;
+
+      // Update timecode
+      if (timecodeRef.current) {
+        timecodeRef.current.textContent =
+          `00:00:${String(Math.floor(t * 60)).padStart(2, '0')}:${String(Math.floor((t * 60 * 30) % 30)).padStart(2, '0')}`;
+      }
+
       raf = requestAnimationFrame(tick);
     };
     tick();
     return () => cancelAnimationFrame(raf);
   }, []);
-
-  // Fake waveform bars
-  const bars = Array.from({ length: 60 }, (_, i) =>
-    Math.abs(Math.sin(i * 0.7) * 0.6 + Math.cos(i * 0.3) * 0.4)
-  );
 
   return (
     <div style={{ width: '100%', padding: '0 24px' }}>
@@ -53,22 +69,21 @@ function TimelineScrubber() {
 
       {/* Audio waveform */}
       <div style={{ position: 'relative', height: '26px', background: CARAMEL_LIGHT, border: `1px solid ${RESIN}22`, borderRadius: '3px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 3px' }}>
-        {bars.map((h, i) => (
-          <div key={i} style={{
+        {BARS.map((h, i) => (
+          <div key={i} ref={(el) => (barRefs.current[i] = el)} style={{
             width: '2px',
             height: `${h * 22}px`,
-            background: i / bars.length < playhead ? RESIN : RESIN + '55',
+            background: RESIN + '55',
             borderRadius: '1px',
-            transition: 'background 0.1s',
           }} />
         ))}
       </div>
 
       {/* Playhead */}
       <div style={{ position: 'relative', height: '1px', marginTop: '-52px' }}>
-        <div style={{
+        <div ref={playheadRef} style={{
           position: 'absolute',
-          left: `${playhead * 100}%`,
+          left: '0%',
           top: '-2px',
           width: '2px',
           height: '56px',
@@ -79,8 +94,8 @@ function TimelineScrubber() {
       </div>
 
       {/* Timecode */}
-      <div style={{ marginTop: '30px', fontSize: '10px', fontFamily: "'Orbitron', sans-serif", color: RESIN, letterSpacing: '0.15em', textAlign: 'center' }}>
-        00:00:{String(Math.floor(playhead * 60)).padStart(2, '0')}:{String(Math.floor((playhead * 60 * 30) % 30)).padStart(2, '0')}
+      <div ref={timecodeRef} style={{ marginTop: '30px', fontSize: '10px', fontFamily: "'Orbitron', sans-serif", color: RESIN, letterSpacing: '0.15em', textAlign: 'center' }}>
+        00:00:00:00
       </div>
     </div>
   );

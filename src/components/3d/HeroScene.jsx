@@ -1,9 +1,15 @@
 import { useRef, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment } from '@react-three/drei';
+import { Canvas, useFrame, useThree, invalidate } from '@react-three/fiber';
+// Environment preset removed — manual lights are sufficient and avoid HDR load
 import * as THREE from 'three';
 import Workstation from './Workstation';
 import Particles from './Particles';
+
+// Continuously request frames so the scene animates (breathing, particles)
+function FrameDriver() {
+  useFrame(() => { invalidate(); });
+  return null;
+}
 
 // Camera pushes into the monitor as scroll advances
 function CameraController({ scrollProgress }) {
@@ -38,10 +44,12 @@ export default function HeroScene({ mouse, scrollProgress = 0 }) {
     <Canvas
       camera={{ position: [0, 0.6, 6.2], fov: 42 }}
       style={{ width: '100%', height: '100%' }}
-      gl={{ antialias: true, alpha: true }}
+      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       dpr={[1, 1.25]}
       performance={{ min: 0.5 }}
+      frameloop="demand"
     >
+      <FrameDriver />
       <CameraController scrollProgress={scrollProgress} />
 
       {/* Moody low ambient — dark backdrop calls for controlled lighting */}
@@ -67,8 +75,6 @@ export default function HeroScene({ mouse, scrollProgress = 0 }) {
       />
 
       <Particles count={50} />
-
-      <Environment preset="night" />
 
       <fog attach="fog" args={['#0a1520', 8, 17]} />
     </Canvas>

@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -34,6 +34,31 @@ const WOOD = '#8fa8bd';            // Desk surface — cool slate
 const WOOD_LIGHT = '#a8bdd0';      // Desk edge highlight
 const METAL = '#3a4f62';           // Monitor stand / headphones — gunmetal
 const KEY = '#e8f1f6';             // Keyboard keys — light ivory
+
+// Instanced keyboard keys — 56 keys in a single draw call instead of 56
+function KeyGrid() {
+  const meshRef = useRef();
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+
+  useEffect(() => {
+    let idx = 0;
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 14; col++) {
+        dummy.position.set(-0.95 + col * 0.14, 0.05, -0.24 + row * 0.16);
+        dummy.updateMatrix();
+        meshRef.current.setMatrixAt(idx++, dummy.matrix);
+      }
+    }
+    meshRef.current.instanceMatrix.needsUpdate = true;
+  }, [dummy]);
+
+  return (
+    <instancedMesh ref={meshRef} args={[null, null, 56]}>
+      <boxGeometry args={[0.11, 0.04, 0.12]} />
+      <meshStandardMaterial color={KEY} roughness={0.5} metalness={0.35} />
+    </instancedMesh>
+  );
+}
 
 export default function Workstation({ mouse, scrollProgress = 0, hoveredSkill, setHoveredSkill }) {
   const groupRef = useRef();
@@ -187,18 +212,8 @@ export default function Workstation({ mouse, scrollProgress = 0, hoveredSkill, s
           <boxGeometry args={[2.2, 0.08, 0.72]} />
           <meshStandardMaterial color="#4a6a80" roughness={0.7} metalness={0.3} />
         </mesh>
-        {/* Key grid — 4 rows x 14 cols */}
-        {Array.from({ length: 4 }).map((_, row) =>
-          Array.from({ length: 14 }).map((_, col) => (
-            <mesh
-              key={`k-${row}-${col}`}
-              position={[-0.95 + col * 0.14, 0.05, -0.24 + row * 0.16]}
-            >
-              <boxGeometry args={[0.11, 0.04, 0.12]} />
-              <meshStandardMaterial color={KEY} roughness={0.5} metalness={0.35} />
-            </mesh>
-          ))
-        )}
+        {/* Key grid — instanced for performance (4 rows x 14 cols = 56 keys) */}
+        <KeyGrid />
         {/* Spacebar */}
         <mesh position={[0, 0.05, 0.32]}>
           <boxGeometry args={[1.0, 0.04, 0.12]} />
