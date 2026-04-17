@@ -1,6 +1,12 @@
 import SectionReveal from '../ui/SectionReveal';
 import { testimonials } from '../../data/content';
 
+const PLACEHOLDER_PHRASES = [
+  "Mid-plank. Can't talk right now.",
+  "Closing a deal. And a sandwich.",
+  "The client is still finding the good lighting.",
+];
+
 export default function Testimonials() {
   return (
     <section id="testimonials" className="section">
@@ -113,11 +119,15 @@ export default function Testimonials() {
                     <span
                       style={{
                         fontFamily: "'Rajdhani', sans-serif",
-                        fontSize: '0.8rem',
+                        fontSize: '0.85rem',
                         color: '#6a8499',
+                        fontStyle: 'italic',
+                        textAlign: 'center',
+                        padding: '0 1rem',
+                        lineHeight: 1.4,
                       }}
                     >
-                      Video coming soon
+                      {PLACEHOLDER_PHRASES[i % PLACEHOLDER_PHRASES.length]}
                     </span>
                   </div>
                 )}

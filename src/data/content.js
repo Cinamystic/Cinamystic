@@ -102,7 +102,7 @@ export const projects = [
     title: 'Real Estate Video 2',
     category: 'Real Estate',
     thumbnail: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=500&fit=crop',
-    videoUrl: 'https://f.io/_9ute_c4',
+    videoUrl: 'https://f.io/El4dpPAb',
     description: 'Drone opener, golden-hour grade, pacing tight enough to keep scrollers watching. Built to close, not decorate.',
   },
   {
@@ -128,7 +128,7 @@ export const projects = [
     title: 'AI Interior Design Video 2',
     category: 'AI Interior',
     thumbnail: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&h=500&fit=crop',
-    videoUrl: 'https://f.io/p1AFW46j',
+    videoUrl: 'https://f.io/ZQlp1xgL',
     description: 'Prompt to pitch film in 48 hours. Loft concept, cinematic dolly moves, approved on the first send.',
   },
   {
@@ -245,8 +245,8 @@ export const testimonials = [
   },
   {
     quote: "We needed our CEO in five languages by Tuesday. Cinamystic delivered without us booking a single studio. The board asked if we'd quietly hired a broadcast team.",
-    name: 'Confidential',
-    role: 'Marketing Lead, SaaS Brand',
+    name: 'Sanika',
+    role: 'Marketing Lead · Confidential',
     videoUrl: null,
   },
 ];

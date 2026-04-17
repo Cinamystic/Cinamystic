@@ -129,23 +129,6 @@ export default function Contact() {
             </a>
 
             <a
-              href={contact.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-hover
-              style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '1rem', color: '#2a4a60', display: 'flex', alignItems: 'center', gap: '0.8rem', transition: 'color 0.3s' }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#2872a1')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = '#ccc')}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="2" y="2" width="20" height="20" rx="5" />
-                <circle cx="12" cy="12" r="5" />
-                <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none" />
-              </svg>
-              @cinamystic
-            </a>
-
-            <a
               href={contact.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
