@@ -329,6 +329,33 @@ export default function Portfolio() {
           }}
         >
           A handful of recent projects — the kind that made clients forward them before I'd even invoiced.
+          {' '}
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              const left = Math.round(window.screenX + (window.outerWidth - 520) / 2);
+              const top = Math.round(window.screenY + (window.outerHeight - 680) / 2);
+              window.open(
+                'https://ai.studio/apps/e6be6645-403a-41f1-9fea-ce0218931e68',
+                'nova-chat',
+                'width=520,height=680,left=' + left + ',top=' + top + ',menubar=no,toolbar=no,location=no,status=no,scrollbars=no,resizable=no'
+              );
+            }}
+            style={{
+              color: '#2872a1',
+              textDecoration: 'underline',
+              textDecorationStyle: 'dotted',
+              textUnderlineOffset: '3px',
+              fontFamily: "'Rajdhani', sans-serif",
+              fontSize: '1.1rem',
+              fontWeight: 600,
+              letterSpacing: '0.04em',
+              cursor: 'pointer',
+            }}
+          >
+            If you'd rather skip the scrolling and explore yourself — just ask NOVA.
+          </a>
         </p>
       </SectionReveal>
 

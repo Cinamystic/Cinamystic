@@ -4,6 +4,7 @@ import useSmoothScroll from './hooks/useSmoothScroll';
 import Loader from './components/ui/Loader';
 import Cursor from './components/ui/Cursor';
 import Navbar from './components/ui/Navbar';
+import AIChatButton from './components/ui/AIChatButton';
 import HeroSkills from './components/sections/HeroSkills';
 import Portfolio from './components/sections/Portfolio';
 import Testimonials from './components/sections/Testimonials';
@@ -25,6 +26,7 @@ export default function App() {
       <Loader onComplete={handleLoaderComplete} />
       <Cursor />
       <Navbar />
+      <AIChatButton />
 
       <main>
         <HeroSkills mouse={mouse} />
